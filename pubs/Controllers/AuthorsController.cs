@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using pubs.Models;
+using pubs.Models.Dto;
 
 namespace pubs.Controllers
 {
@@ -31,20 +32,28 @@ namespace pubs.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<authors>> GetAuthors(string id)
+        public async Task<ActionResult<authorsDto>> GetAuthors(string id)
         {
             if (_context.authors == null)
             {
                 return NotFound();
             }
-            var authors = await _context.authors.FindAsync(id);
 
-            if (authors == null)
+            var author = await _context.authors.FirstOrDefaultAsync(p => p.au_id == id);
+
+            if (author == null)
             {
                 return NotFound();
             }
 
-            return authors;
+            return new authorsDto()
+            {
+                ID = author.au_id,
+                Phone = author.phone,
+                Address = author.address,
+                City = author.city,
+                State = author.state
+            };
         }
 
         [HttpPut("{id}")]
