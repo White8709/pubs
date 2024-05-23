@@ -22,13 +22,21 @@ namespace pubs.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<authors>>> GetAuthors()
+        public async Task<ActionResult<IEnumerable<authorsDto>>> GetAuthorsAll()
         {
             if (_context.authors == null)
             {
                 return NotFound();
             }
-            return await _context.authors.ToListAsync();
+            return await _context.authors
+                .Select(author => new authorsDto()
+                {
+                    ID = author.au_id,
+                    Phone = author.phone,
+                    Address = author.address,
+                    City = author.city,
+                    State = author.state
+                }).ToListAsync();
         }
 
         [HttpGet("{id}")]
