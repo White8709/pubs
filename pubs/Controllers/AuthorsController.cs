@@ -72,7 +72,17 @@ namespace pubs.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(author).State = EntityState.Modified;
+            var authorToUpdate = await _context.authors.FindAsync(id);
+
+            if (authorToUpdate == null)
+            {
+                return NotFound();
+            }
+
+            authorToUpdate.phone = author.phone;
+            authorToUpdate.address = author.address;
+            authorToUpdate.city = author.city;
+            authorToUpdate.state = author.state;
 
             try
             {
